@@ -21,6 +21,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
+import ForgotPass from './src/ForgotPass';
 
 
 function Home() {
@@ -163,6 +164,7 @@ const App: React.FC = () => {
         <Stack.Screen name="Home" component={MyTabs} />
         <Stack.Screen name="OneRecipePage" component={OneRecipePage} />
         <Stack.Screen name="EditProfile" component={EditProfile} />
+        <Stack.Screen name="ForgotPass" component={ForgotPass} />
       </Stack.Navigator>
     </NavigationContainer>
   );

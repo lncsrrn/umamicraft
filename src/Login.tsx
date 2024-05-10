@@ -1,34 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Alert, ScrollView } from 'react-native';
-import { useNavigation,NavigationProp } from '@react-navigation/native';
-import { Color, FontFamily } from "../GlobalStyles";
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import firebaseApp from '.././firebase'; // Import the Firebase app instance
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { FontFamily } from '../GlobalStyles';
 
 // Define the type for the stack navigator's parameters
 type RootStackParamList = {
   Register: undefined;
   Home: undefined;
+  ForgotPass: undefined; // Define the ForgotPassword screen
 };
 
 // Define the navigation prop type for Login and Register component
 type RegisterNavigationProp = NavigationProp<RootStackParamList, 'Register'>;
 type LoginNavigationProp = NavigationProp<RootStackParamList, 'Home'>;
+type ForgotPassNavigationProp = NavigationProp<RootStackParamList, 'ForgotPass'>;
 
 // Define the authentication
 const auth = getAuth(firebaseApp);
 
 const LoginPage: React.FC = () => {
-  const [email, setEmail] = React.useState('');
+  const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
-  const [password, setPassword] = React.useState('');
+  const [password, setPassword] = useState('');
   const [loginSuccessful, setLoginSuccessful] = useState(false);
 
   const navigation = useNavigation<RegisterNavigationProp>();
   const navigation2 = useNavigation<LoginNavigationProp>();
+  const navigation3 = useNavigation<ForgotPassNavigationProp>();
 
-  // Go to Login Screen
+  // Go to Register Screen
   const handleRegister = () => {
     navigation.navigate('Register');
   };
@@ -64,6 +67,10 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  const handleForgotPassword = () => {
+    navigation3.navigate('ForgotPass');
+  };
+
   useEffect(() => {
     // useEffect will be called after the component is mounted
     // If login was successful, navigate to the Home screen
@@ -74,16 +81,16 @@ const LoginPage: React.FC = () => {
   }, [email, password, loginSuccessful, navigation2]);
 
   return (
-
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{  alignItems: 'center' }}>
-          <Text  style={ styles.login }>LOGIN</Text>
-          <Image source={require('../assets/welcome.png')} style={{ width: 320, height: 110}} />
+        <View style={{alignItems: 'center'}}>
+          <Text style={styles.login}>LOGIN</Text>
+          <Image source={require('../assets/welcome.png')} style={{ width: 320, height: 110 }} />
           <Image source={require('../assets/jang-jorim.png')} style={{ width: 200, height: 200 }} />
           <Image source={require('../assets/irasshaimase.png')} style={{ width: 228.36, height: 50, marginBottom: 20 }} />
         </View>
 
+        {/* Email Input */}
         <View style={styles.input}>
           <Icon name="envelope" style={styles.icon} />
           <TextInput
@@ -93,54 +100,55 @@ const LoginPage: React.FC = () => {
             style={styles.textinput}
           />
         </View>
-        
+
+        {/* Password Input */}
         <View style={styles.input}>
           <Icon name="lock" style={styles.icon} />
           <TextInput
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Password"
-          style={styles.textinput}
-          secureTextEntry
-        />
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Password"
+            style={styles.textinput}
+            secureTextEntry
+          />
         </View>
-      
-        <View style={{  alignItems: 'center' }}>
-          <TouchableOpacity style={styles.button} onPress={ handleLogin }>
+
+        {/* Login Button */}
+        <View style={{alignItems: 'center'}}>
+          <TouchableOpacity style={styles.button} onPress={handleLogin}>
             <Text style={styles.buttontext}>Log In</Text>
           </TouchableOpacity>
         </View>
 
-
-        {/* "Or login with..." text */}
-        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 30}}>
-          <View style={{flex: 1, height: 1, backgroundColor: '#841D06', marginHorizontal: 5 }} />
-          <Text style={{marginHorizontal: 10, fontFamily: FontFamily.poppinsRegular}}>Or log in with...</Text>
-          <View style={{flex: 1, height: 1, backgroundColor: '#841D06', marginHorizontal: 5 }} />
+        {/* Or login with... text */}
+        <View style={styles.orLoginWith}>
+          <View style={styles.divider} />
+          <Text style={styles.orLoginWithText}>Or log in with...</Text>
+          <View style={styles.divider} />
         </View>
 
         {/* Google, Facebook, and Twitter icons */}
         <View style={styles.icons}>
           <View style={styles.oneicon}>
-              <Image source={require('../assets/google.png')} style={styles.imageicon}/>
+            <Image source={require('../assets/google.png')} style={styles.imageicon} />
           </View>
-          
           <View style={styles.oneicon}>
-              <Image source={require('../assets/facebook.png')} style={styles.imageicon}/>
+            <Image source={require('../assets/facebook.png')} style={styles.imageicon} />
           </View>
-
           <View style={styles.oneicon}>
-              <Image source={require('../assets/twitter.png')} style={styles.imageicon}/>
+            <Image source={require('../assets/twitter.png')} style={styles.imageicon} />
           </View>
         </View>
 
-        <View style={{alignItems: 'center'}}>
-          <Text style={{ fontSize: 15, fontWeight: 'bold', color: '#841D06', letterSpacing: 2, fontFamily: FontFamily.poppinsRegular }}>Forgot Password?</Text>
-        </View>
-        
-        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 10}}>
-          <Text style={{color: 'black', fontFamily: FontFamily.didactGothicRegular}}>Don't have an account yet?</Text>
-          <Text style={{color: '#841D06', fontFamily: FontFamily.didactGothicRegular}} onPress={handleRegister}> Register</Text>
+        {/* Forgot Password */}
+        <TouchableOpacity style={{alignItems: 'center'}} onPress={handleForgotPassword}>
+          <Text style={styles.forgotPassword}>Forgot Password?</Text>
+        </TouchableOpacity>
+
+        {/* Register */}
+        <View style={styles.registerText}>
+          <Text style={styles.registerTextInner}>Don't have an account yet?</Text>
+          <Text style={[styles.registerTextInner, {color: '#841D06'}]} onPress={handleRegister}> Register</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -150,39 +158,37 @@ const LoginPage: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
     padding: 30
   },
   login: {
-    fontSize: 48, 
+    fontSize: 48,
     color: '#841D06',
     fontFamily: FontFamily.archivoBlackRegular
   },
   icons: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 20, 
-    marginBottom: 20 
+    marginTop: 20,
+    marginBottom: 20
   },
   oneicon: {
-    width: 69, 
-    height: 48, 
-    borderWidth: 1, 
-    borderColor: 'rgba(132, 29, 6, 0.6)', 
-    borderRadius: 10, 
-    alignItems: 'center', 
-    justifyContent: 'center', 
+    width: 69,
+    height: 48,
+    borderWidth: 1,
+    borderColor: 'rgba(132, 29, 6, 0.6)',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 20
   },
   imageicon: {
-    width: 30, 
-    height: 30 
+    width: 30,
+    height: 30
   },
   input: {
-    flexDirection: 'row', 
-    borderRadius: 24, 
-    marginBottom: 20, 
+    flexDirection: 'row',
+    borderRadius: 24,
+    marginBottom: 20,
     backgroundColor: 'lightgray',
     alignItems: 'center'
   },
@@ -194,25 +200,58 @@ const styles = StyleSheet.create({
     color: 'gray'
   },
   textinput: {
-    width: '90%', 
-    fontFamily: FontFamily.didactGothicRegular,
+    flex: 1,
     marginLeft: 10,
-    fontSize: 20, 
-    paddingTop: 10, 
+    fontSize: 20,
+    paddingTop: 10,
     paddingBottom: 10
   },
   button: {
-    padding: 10, width: '70%', 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    height: 45, 
-    borderRadius: 20, 
+    padding: 10,
+    width: '70%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 45,
+    borderRadius: 20,
     backgroundColor: '#841D06'
   },
   buttontext: {
     color: 'white',
     fontFamily: FontFamily.poppinsRegular,
     fontSize: 20
+  },
+  orLoginWith: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 30
+  },
+  orLoginWithText: {
+    marginHorizontal: 10,
+    fontFamily: FontFamily.poppinsRegular
+  },
+  divider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#841D06',
+    marginHorizontal: 5
+  },
+  forgotPassword: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#841D06',
+    letterSpacing: 2,
+    fontFamily: FontFamily.poppinsRegular,
+    marginBottom: 10
+  },
+  registerText: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  registerTextInner: {
+    color: 'black',
+    fontFamily: FontFamily.didactGothicRegular
   }
 });
 

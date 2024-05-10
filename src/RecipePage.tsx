@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FlatList, StyleSheet, View, Text, Image, TouchableOpacity } from "react-native";
+import { FlatList, StyleSheet, View, Text, Image, TouchableOpacity, TextInput } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { ref, onValue, off } from "firebase/database";
 import { database } from '../firebase'; // Your configured firebase file
@@ -19,10 +19,12 @@ const RecipesScreen: React.FC = () => {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const [favoritedRecipes, setFavoritedRecipes] = useState<string[]>([]);
+  const [favoritedMap, setFavoritedMap] = useState<Record<string, boolean>>({});
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
   const auth = getAuth();
   const db = getFirestore();
   const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
-  const [favoritedMap, setFavoritedMap] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     // Fetch the recipes from your realtime database
@@ -134,22 +136,31 @@ const RecipesScreen: React.FC = () => {
       </View>
     </TouchableOpacity>
   );
- 
+
+  // Filter recipes based on search query
+  const filteredRecipes = recipes.filter(recipe =>
+    recipe.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>RECIPES</Text>
-      <View style={styles.recipeList}>
-        {recipes.map((recipe) => (
-          <View key={recipe.id} style={styles.recipeCardContainer}>
-            {renderItem({ item: recipe })}
-          </View>
-        ))}
-      </View>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search recipes"
+        onChangeText={setSearchQuery}
+        value={searchQuery}
+      />
+      <FlatList
+        data={filteredRecipes}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+      />
     </View>
   );
- };
- 
- const styles = StyleSheet.create({
+};
+
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Color.maroon,
@@ -162,14 +173,14 @@ const RecipesScreen: React.FC = () => {
     color: Color.white,
     marginBottom: 20,
   },
-  recipeList: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
-  recipeCardContainer: {
-    width: "70%",
+  searchInput: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 5,
+    backgroundColor: 'white',
     marginBottom: 20,
+    paddingHorizontal: 10,
   },
   recipeCard: {
     backgroundColor: "white",
@@ -203,14 +214,13 @@ const RecipesScreen: React.FC = () => {
     flex: 1,
     marginRight: 8,
   },
-  calorie: {
-    fontFamily: FontFamily.beVietnam,
-    fontSize: 12,
-    color: Color.black,
-  },
   favoriteButton: {
     marginLeft: 8,
   },
- });
- 
- export default RecipesScreen;
+  recipeCardContainer: {
+    flex: 1,
+    marginBottom: 20,
+  },
+});
+
+export default RecipesScreen;
