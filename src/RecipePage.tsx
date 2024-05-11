@@ -8,6 +8,9 @@ import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, setDoc, doc } 
 import { Color, FontFamily } from '../GlobalStyles';
 import { ParamListBase, useNavigation, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import ReusableTextField from './components/ReusableTextField';
+import { Icon } from 'react-native-vector-icons/Icon';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Recipe = {
   id: string;
@@ -143,24 +146,44 @@ const RecipesScreen: React.FC = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>RECIPES</Text>
-      <TextInput
-        style={styles.searchInput}
-        placeholder="Search recipes"
-        onChangeText={setSearchQuery}
-        value={searchQuery}
-      />
-      <FlatList
-        data={filteredRecipes}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-      />
+    <View>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Forgot Password</Text>
+        <ReusableTextField
+          placeholder="Search Recipe"
+          onChangeText={setSearchQuery}
+          value={searchQuery}
+        />
+      </View>
+
+      <View style={styles.container}>
+        <Text style={styles.title}>RECIPES</Text>
+
+        <FlatList
+          data={filteredRecipes}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+        />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  headerText: {
+    fontFamily: FontFamily.hiraKakuStdNW8,
+    fontSize: 16,
+    color: "#841D06"
+  },
+  header: {
+    paddingTop: 104,
+    paddingHorizontal: 36,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 12,
+    alignItems: 'baseline',
+    backgroundColor: 'white',
+  },
   container: {
     flex: 1,
     backgroundColor: Color.maroon,

@@ -60,8 +60,8 @@ function MyTabs() {
       initialRouteName="Home"
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { position: 'absolute', height: 65 },
-        tabBarLabelStyle: { height: 10 },
+        tabBarStyle: { position: 'absolute', height: 100, borderTopWidth: 2, borderTopColor: '#841D06'  },
+        tabBarLabelStyle: { height: 8 },
         tabBarActiveTintColor: '#841D06',
         tabBarHideOnKeyboard: true,
       }}

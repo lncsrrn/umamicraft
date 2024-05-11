@@ -6,6 +6,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import firebaseApp from '.././firebase'; // Import the Firebase app instance
+import ReusableTextField from './components/ReusableTextField';
+import ReusableButton from './components/ReusableButton';
 
 // Define the type for the stack navigator's parameters
 type RootStackParamList = {
@@ -94,38 +96,36 @@ const RegisterPage: React.FC = () => {
   };
 
   // Handle Sign Up Button Function
-// Handle Sign Up Button Function
-const handleSignUp = async () => {
-  if (validateForm()) {
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+  // Handle Sign Up Button Function
+  const handleSignUp = async () => {
+    if (validateForm()) {
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-      // Store additional information in Firestore
-      await setDoc(doc(db, "users", user.uid), {
-        name: name,
-        email: email, // Make sure to include email
-        username: username,
-        password: password, // Storing passwords in plaintext is not recommended
-      });
+        // Store additional information in Firestore
+        await setDoc(doc(db, "users", user.uid), {
+          name: name,
+          email: email, // Make sure to include email
+          username: username,
+          password: password, // Storing passwords in plaintext is not recommended
+        });
 
-      // If the additional information is stored successfully:
-      Alert.alert('Registration Successful', 'User registered successfully!');
-      setRegistrationSuccessful(true);
+        // If the additional information is stored successfully:
+        Alert.alert('Registration Successful', 'User registered successfully!');
+        setRegistrationSuccessful(true);
 
-      // Optionally, navigate to the login screen or another relevant screen
-      navigation.navigate('Login');
+        // Optionally, navigate to the login screen or another relevant screen
+        navigation.navigate('Login');
 
-    } catch (error) {
-      // Handle both registration and Firestore errors
-      console.error(error);
-      // You may want to display a different message based on the error type
-      Alert.alert('Registration Unsuccessful', 'There was an error during the registration process.');
+      } catch (error) {
+        // Handle both registration and Firestore errors
+        console.error(error);
+        // You may want to display a different message based on the error type
+        Alert.alert('Registration Unsuccessful', 'There was an error during the registration process.');
+      }
     }
-  }
-};
-
-  
+  };
 
   useEffect(() => {
     // useEffect will be called after the component is mounted
@@ -137,199 +137,174 @@ const handleSignUp = async () => {
   }, [registrationSuccessful, navigation]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{  alignItems: 'center' }}>
-          <Image source={require('../assets/ramen.png')} style={{ paddingTop: 20, width: 200, height: 200 }} />
-          
-          <Text style={styles.signup}>SIGN UP</Text>
+    <View>
 
-          {/* Google, Facebook, and Twitter icons */}
-          <View style={styles.icons}>
-            <View style={styles.oneicon}>
-                <Image source={require('../assets/google.png')} style={styles.imageicon}/>
-            </View>
-            
-            <View style={styles.oneicon}>
-                <Image source={require('../assets/facebook.png')} style={styles.imageicon}/>
-            </View>
+      <View style={styles.header}>
+        <Icon
+          name='chevron-left'
+          size={32}
+          style={styles.back}
+          onPress={() => navigation.navigate('Login')}
+        />
+        <Text style={styles.headerText}>Sign Up</Text>
+      </View>
 
-            <View style={styles.oneicon}>
-                <Image source={require('../assets/twitter.png')} style={styles.imageicon}/>
-            </View>
+      <View style={styles.container}>
+
+        <View style={styles.inputCont}>
+          <ReusableTextField placeholder="Name" value={name} setValue={setName} secureTextEntry={false} />
+          <Text style={[styles.errorText, !nameError && { display: 'none' }]}>
+            {nameError}
+          </Text>
+          <ReusableTextField placeholder="Email" value={email} setValue={setEmail} secureTextEntry={false} />
+          <Text style={[styles.errorText, !emailError && { display: 'none' }]}>
+            {emailError}
+          </Text>
+          <ReusableTextField placeholder="Username" value={username} setValue={setUsername} secureTextEntry={false} />
+          <Text style={[styles.errorText, !usernameError && { display: 'none' }]}>
+            {usernameError}
+          </Text>
+          <ReusableTextField placeholder="Password" value={password} setValue={setPassword} secureTextEntry={true} />
+          <Text style={[styles.errorText, !passwordError && { display: 'none' }]}>
+            {passwordError}
+          </Text>
+          <ReusableTextField placeholder="Confirm Password" value={confirmPassword} setValue={setConfirmPassword} secureTextEntry={true} />
+          <Text style={[styles.errorText, !confirmPasswordError && { display: 'none' }]}>
+            {confirmPasswordError}
+          </Text>
+        </View>
+
+        <ReusableButton text="Sign Up" onPress={handleSignUp} />
+
+        <View style={styles.termsCont}>
+          <Text style={styles.p}>By pressing "Sign Up", you agree to our</Text>
+          <Text style={styles.p2}>Terms & Conditions</Text>
+        </View>
+
+        <View style={styles.divCont}>
+          <Text style={styles.orLoginWithText}>OR SIGN UP WITH</Text>
+        </View>
+
+        {/* Google, Facebook, and Twitter socmedCont */}
+        <View style={styles.socmedCont}>
+          <View style={styles.socmedButton}>
+            <Image source={require('../assets/google.png')} style={styles.imageicon} />
+            <Text style={styles.socmedText}>Google</Text>
           </View>
-
-          <Text style={{ color: 'white', fontFamily: FontFamily.didactGothicRegular }}>Or sign up with</Text>
+          <View style={styles.socmedButton}>
+            <Image source={require('../assets/facebook.png')} style={styles.imageicon} />
+            <Text style={styles.socmedText}>Facebook</Text>
+          </View>
+          <View style={styles.socmedButton}>
+            <Image source={require('../assets/twitter.png')} style={styles.imageicon} />
+            <Text style={styles.socmedText}>Twitter</Text>
+          </View>
         </View>
 
-        <View style={styles.input1}>
-          <Icon name="user" style={styles.icon} />
-          <TextInput
-          value={name}
-          onChangeText={setName}
-          placeholder="Name" placeholderTextColor="white"
-          style={styles.textinput}
-        />
-        </View>
-        <Text style={[styles.errorText, !nameError && { display: 'none' }]}>
-          {nameError}
-        </Text>
-
-        <View style={styles.input1}>
-        <Icon name="envelope" style={styles.icon} />
-          <TextInput
-          value={email}
-          onChangeText={setEmail}
-          placeholder="Email" placeholderTextColor="white"
-          style={styles.textinput}
-        />
-        </View>
-        <Text style={[styles.errorText, !emailError && { display: 'none' }]}>
-          {emailError}
-        </Text>
-
-        <View style={styles.input1}>
-          <Icon name="user-circle" style={styles.icon} />
-          <TextInput
-          value={username}
-          onChangeText={setUsername}
-          placeholder="Username" placeholderTextColor="white"
-          style={styles.textinput}
-        />
-        </View>
-        <Text style={[styles.errorText, !usernameError && { display: 'none' }]}>
-          {usernameError}
-        </Text>
-        
-        <View style={styles.input1}>
-          <Icon name="lock" style={styles.icon} />
-          <TextInput
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Password" placeholderTextColor="white"
-          style={styles.textinput}
-          secureTextEntry
-        />
-        </View>
-        <Text style={[styles.errorText, !passwordError && { display: 'none' }]}>
-          {passwordError}
-        </Text>
-
-        <View style={styles.input2}>
-          <Icon name="lock" style={styles.icon} />
-          <TextInput
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          placeholder="Confirm Password" placeholderTextColor="white"
-          style={styles.textinput}
-          secureTextEntry
-        />
-        </View>
-        <Text style={[styles.errorText, !confirmPasswordError && { display: 'none' }]}>
-          {confirmPasswordError}
-        </Text>
-
-        <View style={{  alignItems: 'center' }}>
-          <TouchableOpacity style={styles.button} onPress={ handleSignUp }>
-            <Text style={styles.buttontext}>Sign Up</Text>
-          </TouchableOpacity>
+        <View style={styles.registerText}>
+          <Text style={styles.registerTextInner}>Don't have an account yet?</Text>
+          <Text style={[styles.registerTextInner, { color: '#841D06' }]} onPress={handleLogin}> Register</Text>
         </View>
 
-        <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginTop: 20}}>
-          <Text style={{color: 'white', fontFamily: FontFamily.didactGothicRegular}}>Already a member?</Text>
-          <Text style={{color: '#FECC81', fontFamily: FontFamily.didactGothicRegular}} onPress={handleLogin}> Login</Text>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+  },
+  p: {
+    fontSize: 12,
+  },
+  p2: {
+    fontSize: 12,
+    color: "#841D06"
+  },
+  termsCont: {
+    width: "100%",
+    alignItems: 'center'
+  },
+  inputCont: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 12,
+  },
+  socmedText: {
+  },
+  socmedCont: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    gap: 12
+  },
+  socmedButton: {
+    display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
-    backgroundColor: '#841D06',
-    padding: 30
-  },
-  signup: {
-    fontSize: 40, 
-    color: 'white',
-    fontFamily: FontFamily.archivoBlackRegular
-  },
-  icons: {
-    flexDirection: 'row', 
-    justifyContent: 'center',
-    marginTop: 20, 
-    marginBottom: 20 
-  },
-  oneicon: {
-    width: 69, 
-    height: 48, 
-    borderWidth: 1, 
-    borderColor: 'rgba(255, 255, 255, 0.6)', 
-    borderRadius: 10, 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    marginRight: 20
+    gap: 8,
+    width: "100%",
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(132, 29, 6, 0.6)',
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   imageicon: {
-    width: 30, 
-    height: 30 
+    width: 30,
+    height: 30
   },
-  input1: {
-    flexDirection: 'row', 
-    borderRadius: 24, 
-    borderBottomWidth: 1, 
-    borderBottomColor: 'white',
-    marginTop: 20
+  divCont: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  input2: {
-    flexDirection: 'row', 
-    borderRadius: 24, 
-    borderBottomWidth: 1, 
-    borderBottomColor: 'white',
-    marginTop: 20
+  orLoginWithText: {
+    marginHorizontal: 8,
+    color: 'lightgrey'
   },
-  icon: {
-    marginTop: 10,
-    marginLeft: 20,
-    fontSize: 20,
-    width: 22,
-    textAlign: 'center',
-    color: 'white'
+  forgotPassword: {
+    fontSize: 12,
+    color: '#841D06',
   },
-  textinput: {
-    width: '90%', 
-    fontFamily: FontFamily.didactGothicRegular,
-    marginLeft: 10,
-    fontSize: 15, 
-    paddingTop: 5, 
-    paddingBottom: 5, 
-    color: 'white'
+  registerText: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
-  button: {
-    padding: 10, 
-    width: '70%', 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    height: 45, 
-    borderRadius: 20, 
+  registerTextInner: {
+    color: 'black',
+  },
+  back: {
+    color: "#841D06"
+  },
+  headerText: {
+    fontFamily: FontFamily.hiraKakuStdNW8,
+    fontSize: 16,
+    color: "#841D06"
+  },
+  header: {
+    paddingTop: 80,
+    paddingHorizontal: 36,
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 40,
+    alignItems: 'center',
     backgroundColor: 'white',
-    marginTop: 30
   },
-  buttontext: {
-    color: '#841D06', 
-    fontFamily: FontFamily.poppinsRegular,
-    fontSize: 20, 
-    fontWeight: 'bold'
-  },
-  errorText: {
-    paddingLeft: 20,
-    fontFamily: FontFamily.poppinsRegular,
-    color: 'red',
-    textAlign: 'left',
-    marginTop: 10
+  container: {
+    display: 'flex',
+    width: "100%",
+    height: 932,
+    flexDirection: 'column',
+    paddingHorizontal: 36,
+    backgroundColor: 'white',
+    paddingTop: 24,
+    gap: 24
   },
 });
 

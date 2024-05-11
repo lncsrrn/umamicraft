@@ -4,15 +4,18 @@ import { NavigationProp, useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import firebaseApp from '.././firebase'; // Import the Firebase app instance
+import ReusableTextField from './components/ReusableTextField';
+import ReusableButton from './components/ReusableButton';
+import { FontFamily } from '../GlobalStyles';
 
 
 // Define the type for the stack navigator's parameters
 type RootStackParamList = {
-    Login: undefined;
-  };
-  
-  // Define the navigation prop type for Register component
-  type LoginNavigationProp = NavigationProp<RootStackParamList, 'Login'>;
+  Login: undefined;
+};
+
+// Define the navigation prop type for Register component
+type LoginNavigationProp = NavigationProp<RootStackParamList, 'Login'>;
 
 // Define the authentication
 const auth = getAuth(firebaseApp);
@@ -49,86 +52,84 @@ const ForgotPasswordPage: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={{ alignItems: 'center' }}>
-        <Text style={styles.forgotPassword}>Forgot Password?</Text>
+    <View>
+      <View style={styles.header}>
+        <Icon
+          name='chevron-left'
+          size={32}
+          style={styles.back}
+          onPress={() => navigation.navigate('Login')}
+        />
+        <Text style={styles.headerText}>Forgot Password</Text>
       </View>
+      <View style={styles.container}>
 
-      {/* Email Input */}
-      <View style={styles.input}>
-        <Icon name="envelope" style={styles.icon} />
-        <TextInput
+
+        <View style={styles.textCont}>
+          <Text style={styles.p}>Enter your email below to reset your password.</Text>
+        </View>
+
+        {/* Email Input */}
+        <ReusableTextField
           value={email}
           onChangeText={setEmail}
           placeholder="Email"
-          style={styles.textinput}
-          keyboardType="email-address"
-          autoCapitalize="none"
         />
-      </View>
-      <Text style={[styles.errorText, !emailError && { display: 'none' }]}>
-        {emailError}
-      </Text>
 
-      {/* Reset Password Button */}
-      <View style={{ alignItems: 'center' }}>
-        <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
-          <Text style={styles.buttontext}>Reset Password</Text>
-        </TouchableOpacity>
+        <Text style={[styles.errorText, !emailError && { display: 'none' }]}>
+          {emailError}
+        </Text>
+
+        {/* Reset Password Button */}
+        <ReusableButton
+          onPress={handleResetPassword}
+          text="Reset Passsword"
+        />
+
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
 // Styles
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#fff',
-    padding: 20
+  p: {
+    textAlign: 'center'
   },
-  forgotPassword: {
-    fontSize: 24,
-    color: '#333',
-    marginBottom: 20
-  },
-  input: {
-    flexDirection: 'row',
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 20,
-    alignItems: 'center'
-  },
-  icon: {
-    marginLeft: 10,
-    fontSize: 20,
-    color: '#555'
-  },
-  textinput: {
-    flex: 1,
-    marginLeft: 10,
-    fontSize: 16,
-    paddingVertical: 10
-  },
-  button: {
-    padding: 15,
-    width: '70%',
+  textCont: {
     alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 20,
-    backgroundColor: '#841D06',
-    marginTop: 20
+    justifyContent: 'center'
   },
-  buttontext: {
-    color: '#fff',
-    fontSize: 18
+  back: {
+    color: "#841D06"
+  },
+  headerText: {
+    fontFamily: FontFamily.hiraKakuStdNW8,
+    fontSize: 16,
+    color: "#841D06"
+  },
+  header: {
+    paddingTop: 80,
+    paddingHorizontal: 36,
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 40,
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  container: {
+    display: 'flex',
+    width: "100%",
+    height: 932,
+    flexDirection: 'column',
+    paddingHorizontal: 36,
+    backgroundColor: 'white',
+    paddingTop: 80,
+    gap: 16
   },
   errorText: {
     color: 'red',
     textAlign: 'center',
-    marginTop: 5
   }
 });
 

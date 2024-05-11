@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, View, Text, TextInput, StyleSheet, Image, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import firebaseApp from '.././firebase'; // Import the Firebase app instance
-import Icon from 'react-native-vector-icons/FontAwesome';
 import { FontFamily } from '../GlobalStyles';
+import ReusableButton from './components/ReusableButton';
+import ReusableTextField from './components/ReusableTextField';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 // Define the type for the stack navigator's parameters
 type RootStackParamList = {
@@ -82,167 +84,154 @@ const LoginPage: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{alignItems: 'center'}}>
-          <Text style={styles.login}>LOGIN</Text>
-          <Image source={require('../assets/welcome.png')} style={{ width: 320, height: 110 }} />
-          <Image source={require('../assets/jang-jorim.png')} style={{ width: 200, height: 200 }} />
-          <Image source={require('../assets/irasshaimase.png')} style={{ width: 228.36, height: 50, marginBottom: 20 }} />
-        </View>
-
-        {/* Email Input */}
-        <View style={styles.input}>
-          <Icon name="envelope" style={styles.icon} />
-          <TextInput
-            value={email}
-            onChangeText={setEmail}
-            placeholder="Email"
-            style={styles.textinput}
+      <View style={styles.contWrapper}>
+        <View style={styles.logoCont}>
+          <Image
+            style={styles.logoIcon}
+            source={require("../assets/logo.png")}
           />
-        </View>
 
-        {/* Password Input */}
-        <View style={styles.input}>
-          <Icon name="lock" style={styles.icon} />
-          <TextInput
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Password"
-            style={styles.textinput}
-            secureTextEntry
-          />
         </View>
+        <View style={styles.loginCont}>
 
-        {/* Login Button */}
-        <View style={{alignItems: 'center'}}>
-          <TouchableOpacity style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttontext}>Log In</Text>
-          </TouchableOpacity>
-        </View>
+          <Text style={styles.header}>Log In</Text>
 
-        {/* Or login with... text */}
-        <View style={styles.orLoginWith}>
-          <View style={styles.divider} />
-          <Text style={styles.orLoginWithText}>Or log in with...</Text>
-          <View style={styles.divider} />
-        </View>
+          <View style={styles.inputCont}>
+            {/* Email Input */}
+            <ReusableTextField placeholder="Email" value={email} setValue={setEmail} secureTextEntry={false} />
 
-        {/* Google, Facebook, and Twitter icons */}
-        <View style={styles.icons}>
-          <View style={styles.oneicon}>
-            <Image source={require('../assets/google.png')} style={styles.imageicon} />
+            {/* Password Input */}
+            <ReusableTextField placeholder="Password" value={password} setValue={setPassword} secureTextEntry={true} />
+
+            <View style={styles.newCont}>
+              <TouchableOpacity style={{ alignItems: 'center' }} onPress={handleForgotPassword}>
+                <Text style={styles.forgotPassword}>Forgot Password?</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View style={styles.oneicon}>
-            <Image source={require('../assets/facebook.png')} style={styles.imageicon} />
-          </View>
-          <View style={styles.oneicon}>
-            <Image source={require('../assets/twitter.png')} style={styles.imageicon} />
-          </View>
-        </View>
 
-        {/* Forgot Password */}
-        <TouchableOpacity style={{alignItems: 'center'}} onPress={handleForgotPassword}>
-          <Text style={styles.forgotPassword}>Forgot Password?</Text>
-        </TouchableOpacity>
+          {/* Login Button */}
+          <ReusableButton text="Log In" onPress={handleLogin} />
 
-        {/* Register */}
-        <View style={styles.registerText}>
-          <Text style={styles.registerTextInner}>Don't have an account yet?</Text>
-          <Text style={[styles.registerTextInner, {color: '#841D06'}]} onPress={handleRegister}> Register</Text>
+          {/* Or login with... text */}
+          <View style={styles.divCont}>
+            <Text style={styles.orLoginWithText}>OR LOG IN WITH</Text>
+          </View>
+
+          {/* Google, Facebook, and Twitter socmedCont */}
+          <View style={styles.socmedCont}>
+            <View style={styles.socmedButton}>
+              <Image source={require('../assets/google.png')} style={styles.imageicon} />
+              <Text style={styles.socmedText}>Google</Text>
+            </View>
+            <View style={styles.socmedButton}>
+              <Image source={require('../assets/facebook.png')} style={styles.imageicon} />
+              <Text style={styles.socmedText}>Facebook</Text>
+            </View>
+            <View style={styles.socmedButton}>
+              <Image source={require('../assets/twitter.png')} style={styles.imageicon} />
+              <Text style={styles.socmedText}>Twitter</Text>
+            </View>
+          </View>
+
+          {/* Forgot Password */}
+
+
+          {/* Register */}
+          <View style={styles.registerText}>
+            <Text style={styles.registerTextInner}>Don't have an account yet?</Text>
+            <Text style={[styles.registerTextInner, { color: '#841D06' }]} onPress={handleRegister}> Register</Text>
+          </View>
+
         </View>
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 30
+  newCont: {
+    display: 'flex',
+    flexDirection: 'row-reverse',
+    width: "100%"
   },
-  login: {
-    fontSize: 48,
+  inputCont: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 12,
+  },
+  header: {
+    fontSize: 24,
     color: '#841D06',
-    fontFamily: FontFamily.archivoBlackRegular
+    fontFamily: FontFamily.hiraKakuStdNW8,
   },
-  icons: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
-    marginBottom: 20
+  contWrapper: {
+    width: "100%",
+    height: 932,
+    display: 'flex',
+    flexDirection: 'column',
   },
-  oneicon: {
-    width: 69,
-    height: 48,
-    borderWidth: 1,
-    borderColor: 'rgba(132, 29, 6, 0.6)',
-    borderRadius: 10,
+  logoIcon: {
+    height: 56,
+    width: 56
+  },
+  logoCont: {
+    width: "100%",
+    height: 161,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 20
+    marginTop: 35
+  },
+  loginCont: {
+    width: "100%",
+    height: 736,
+    gap: 24,
+    backgroundColor: 'white',
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingVertical: 36,
+    paddingHorizontal: 48,
+  },
+  container: {
+    backgroundColor: "#841D06",
+  },
+  socmedText: {
+  },
+  socmedCont: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    gap: 12
+  },
+  socmedButton: {
+    display: 'flex',
+    flexDirection: 'row',
+    gap: 8,
+    width: "100%",
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(132, 29, 6, 0.6)',
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   imageicon: {
     width: 30,
     height: 30
   },
-  input: {
-    flexDirection: 'row',
-    borderRadius: 24,
-    marginBottom: 20,
-    backgroundColor: 'lightgray',
-    alignItems: 'center'
-  },
-  icon: {
-    textAlign: 'center',
-    marginLeft: 20,
-    width: 30,
-    fontSize: 30,
-    color: 'gray'
-  },
-  textinput: {
-    flex: 1,
-    marginLeft: 10,
-    fontSize: 20,
-    paddingTop: 10,
-    paddingBottom: 10
-  },
-  button: {
-    padding: 10,
-    width: '70%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 45,
-    borderRadius: 20,
-    backgroundColor: '#841D06'
-  },
-  buttontext: {
-    color: 'white',
-    fontFamily: FontFamily.poppinsRegular,
-    fontSize: 20
-  },
-  orLoginWith: {
+  divCont: {
+    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 30
   },
   orLoginWithText: {
-    marginHorizontal: 10,
-    fontFamily: FontFamily.poppinsRegular
-  },
-  divider: {
-    flex: 1,
-    height: 1,
-    backgroundColor: '#841D06',
-    marginHorizontal: 5
+    marginHorizontal: 8,
+    color: 'lightgrey'
   },
   forgotPassword: {
-    fontSize: 15,
-    fontWeight: 'bold',
+    fontSize: 12,
     color: '#841D06',
-    letterSpacing: 2,
-    fontFamily: FontFamily.poppinsRegular,
-    marginBottom: 10
   },
   registerText: {
     flexDirection: 'row',
@@ -251,7 +240,6 @@ const styles = StyleSheet.create({
   },
   registerTextInner: {
     color: 'black',
-    fontFamily: FontFamily.didactGothicRegular
   }
 });
 

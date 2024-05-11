@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Image, TextInput, Pressable } from "react-native";
+import { StyleSheet, View, Text, Image, TextInput, Pressable, ScrollView, TouchableOpacity } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useNavigation, ParamListBase } from "@react-navigation/native";
 import { Color, FontFamily } from "../GlobalStyles";
-import { FontAwesome } from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { doc, getDoc, getFirestore, onSnapshot } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import firebaseApp from '.././firebase';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<ParamListBase>>();
@@ -16,7 +17,7 @@ const HomeScreen: React.FC = () => {
   const db = getFirestore(firebaseApp);
 
   useEffect(() => {
-    let unsubscribeUser = () => {};
+    let unsubscribeUser = () => { };
 
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -44,465 +45,424 @@ const HomeScreen: React.FC = () => {
   }, []);
 
   return (
-    <View style={styles.home}>
-      {/* Header */}
-      <View style={styles.header}>
-      <Text style={styles.welcome}>Welcome,</Text>
-      <Text style={styles.carlo}>{ name || 'Guest' }!</Text>
+    <ScrollView>
+      <SafeAreaView style={styles.container}>
 
-      {/* Searchbar */}
-      <View style={styles.searchBarContainer}>
-        <TextInput 
-        placeholder = 'Search recipes'
-        style={styles.textInput}/>
-        <FontAwesome name="search"
-        style={styles.searchBtn}
-        size={24} 
-        color='#841D06' />
-      </View>
+        <View style={styles.header}>
+          <Text style={styles.welcome}>Welcome,</Text>
+          <Text style={styles.username}>{name || 'Guest'}!</Text>
+        </View>
 
-      {/* Search by Ingredients */}
-      </View>
-      <View style={[styles.searchByIngredientsContainer, styles.ingredientsLayout]}>
-        <Text style={[styles.searchIngredients, styles.titles]}>
-          Search by Ingredients
-        </Text>
-        <Pressable
-          style={styles.viewAll}
-          onPress={() => navigation.navigate("ViewAllIngredients")}
-        >
-          <Text style={[styles.underlined, styles.ingredientsText]}>View all</Text>
-        </Pressable>
-        <View
-          style={[styles.rowOfIngredientsWrapper, styles.ingredientsLayout]}
-        >
-          <View>
-          <View style={[styles.eggPosition, styles.ingredientsIconsLayout1]}>
-              <Image
-                style={styles.circlesLayout}
-                source={require("../assets/circle1.png")}
-              />
-              <Image
-                style={[styles.eggIcon, styles.ingredientsIconsLayout2]}
-                 
-                source={require("../assets/egg.png")}
-              />
-              <Text style={[styles.eggText, styles.ingredientsText]}>Egg</Text>
-            </View>
 
-            <View style={[styles.garlicPosition, styles.ingredientsIconsLayout1]}>
-              <Image
-                style={styles.circlesLayout}
-                 
-                source={require("../assets/circle2.png")}
-              />
-              <Image
-                style={[styles.garlicIcon, styles.ingredientsIconsLayout2]}
-                 
-                source={require("../assets/garlic.png")}
-              />
-              <Text style={[styles.garlicText, styles.ingredientsText]}>Garlic</Text>
-            </View>
+        <View style={styles.content}>
 
-            <View style={[styles.onionPosition, styles.ingredientsIconsLayout1]}>
-              <Image
-                style={styles.circlesLayout}
-                 
-                source={require("../assets/circle3.png")}
-              />
-              <Image
-                style={[styles.onionIcon, styles.ingredientsIconsLayout2]}
-                 
-                source={require("../assets/onion.png")}
-              />
-              <Text style={[styles.onionText, styles.ingredientsText]}>Onion</Text>
-            </View>
-
-            <View style={[styles.porkPosition, styles.ingredientsIconsLayout1]}>
-              <Image
-                style={styles.circlesLayout}
-                 
-                source={require("../assets/circle4.png")}
-              />
-              <Image
-                style={[styles.porkIcon, styles.ingredientsIconsLayout2]}
-                 
-                source={require("../assets/pork.png")}
-              />
-              <Text style={[styles.porkText, styles.ingredientsText]}>Pork</Text>
-            </View>
+          <View style={styles.introCard}>
+            <Text style={styles.lead}>Where Ingredients Meet Inspiration!</Text>
+            <Text style={styles.p}>Discover personalized recipes tailored to your taste,
+              health goals, and allergies, all at your fingertips!</Text>
           </View>
-        </View>
-      </View>
 
-      {/* Search by Category */}
-      <View style={styles.searchByCategory}>
-        <Text style={styles.titles}>
-          Search by Category
-        </Text>
-        <View style={[styles.shoyu, styles.categLayout]}>
-          <View style={styles.categContainer} />
-          <Text style={styles.categName}>Shoyu</Text>
-          <Image
-            style={styles.categIcon}
-            source={require("../assets/shoyu.png")}
-          />
+          <View style={styles.cardSect}>
+
+            <View style={styles.sectTitle}>
+              <Text style={styles.title}>
+                Featured Recipes
+              </Text>
+            </View>
+
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.carouselCont}>
+
+              <View style={styles.recipeCard}>
+                <View style={styles.imgCont}>
+                  <Image src={require("../assets/recipe1.png")} style={styles.img} />
+                </View>
+                <View style={styles.recipeDetails}>
+                  <View style={styles.row}>
+                    <Text style={styles.recipeName}>Easy Chicken Recipe</Text>
+                  </View>
+                  <Text style={styles.recipeCal}>658 Cal</Text>
+                </View>
+              </View>
+
+              <View style={styles.recipeCard}>
+                <View style={styles.imgCont}>
+                  <Image src={require("../assets/recipe1.png")} style={styles.img} />
+                </View>
+                <View style={styles.recipeDetails}>
+                  <View style={styles.row}>
+                    <Text style={styles.recipeName}>Easy Chicken Recipe</Text>
+                  </View>
+                  <Text style={styles.recipeCal}>658 Cal</Text>
+                </View>
+              </View>
+
+              <View style={styles.recipeCard}>
+                <View style={styles.imgCont}>
+                  <Image src={require("../assets/recipe1.png")} style={styles.img} />
+                </View>
+                <View style={styles.recipeDetails}>
+                  <View style={styles.row}>
+                    <Text style={styles.recipeName}>Easy Chicken Recipe</Text>
+                  </View>
+                  <Text style={styles.recipeCal}>658 Cal</Text>
+                </View>
+              </View>
+
+              <View style={styles.recipeCard}>
+                <View style={styles.imgCont}>
+                  <Image src={require("../assets/recipe1.png")} style={styles.img} />
+                </View>
+                <View style={styles.recipeDetails}>
+                  <View style={styles.row}>
+                    <Text style={styles.recipeName}>Easy Chicken Recipe</Text>
+                  </View>
+                  <Text style={styles.recipeCal}>658 Cal</Text>
+                </View>
+              </View>
+
+              <View style={styles.recipeCard}>
+                <View style={styles.imgCont}>
+                  <Image src={require("../assets/recipe1.png")} style={styles.img} />
+                </View>
+                <View style={styles.recipeDetails}>
+                  <View style={styles.row}>
+                    <Text style={styles.recipeName}>Easy Chicken Recipe</Text>
+                  </View>
+                  <Text style={styles.recipeCal}>658 Cal</Text>
+                </View>
+              </View>
+
+              <View style={styles.recipeCard}>
+                <View style={styles.imgCont}>
+                  <Image src={require("../assets/recipe1.png")} style={styles.img} />
+                </View>
+                <View style={styles.recipeDetails}>
+                  <View style={styles.row}>
+                    <Text style={styles.recipeName}>Easy Chicken Recipe</Text>
+                  </View>
+                  <Text style={styles.recipeCal}>658 Cal</Text>
+                </View>
+              </View>
+
+            </ScrollView>
+
+          </View>
+
+          <View style={styles.cardSect}>
+
+            <View style={styles.sectTitle}>
+              <Text style={styles.title}>
+                Search by Ingredients
+              </Text>
+              <Pressable
+                onPress={() => navigation.navigate("ViewAllIngredients")}
+              >
+                <Text style={styles.viewAll}>View all</Text>
+              </Pressable>
+            </View>
+
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.carouselCont}>
+              <View style={styles.ingreItemCont}>
+                <Image
+                  style={styles.ingreIcon}
+                  source={require("../assets/Egg.png")}
+                />
+                <Text style={styles.ingreText}>Egg</Text>
+              </View>
+              <View style={styles.ingreItemCont}>
+                <Image
+                  style={styles.ingreIcon}
+                  source={require("../assets/garlic.png")}
+                />
+                <Text style={styles.ingreText}>Garlic</Text>
+              </View>
+              <View style={styles.ingreItemCont}>
+                <Image
+                  style={styles.ingreIcon}
+                  source={require("../assets/onion.png")}
+                />
+                <Text style={styles.ingreText}>Onion</Text>
+              </View>
+              <View style={styles.ingreItemCont}>
+                <Image
+                  style={styles.ingreIcon}
+                  source={require("../assets/Steak.png")}
+                />
+                <Text style={styles.ingreText}>Pork</Text>
+              </View>
+              <View style={styles.ingreItemCont}>
+                <Image
+                  style={styles.ingreIcon}
+                  source={require("../assets/cheese.png")}
+                />
+                <Text style={styles.ingreText}>Cheese</Text>
+              </View>
+              <View style={styles.ingreItemCont}>
+                <Image
+                  style={styles.ingreIcon}
+                  source={require("../assets/bread.png")}
+                />
+                <Text style={styles.ingreText}>Bread</Text>
+              </View>
+              <View style={styles.ingreItemCont}>
+                <Image
+                  style={styles.ingreIcon}
+                  source={require("../assets/Milk.png")}
+                />
+                <Text style={styles.ingreText}>Milk</Text>
+              </View>
+              <View style={styles.ingreItemCont}>
+                <Image
+                  style={styles.ingreIcon}
+                  source={require("../assets/butter.png")}
+                />
+                <Text style={styles.ingreText}>Butter</Text>
+              </View>
+              <View style={styles.ingreItemCont}>
+                <Image
+                  style={styles.ingreIcon}
+                  source={require("../assets/Carrot.png")}
+                />
+                <Text style={styles.ingreText}>Carrot</Text>
+              </View>
+              <View style={styles.ingreItemCont}>
+                <Image
+                  style={styles.ingreIcon}
+                  source={require("../assets/Banana.png")}
+                />
+                <Text style={styles.ingreText}>Banana</Text>
+              </View>
+              <View style={styles.ingreItemCont}>
+                <Image
+                  style={styles.ingreIcon}
+                  source={require("../assets/Potato.png")}
+                />
+                <Text style={styles.ingreText}>Potato</Text>
+              </View>
+            </ScrollView>
+
+          </View>
+
+          <View style={styles.cardSect}>
+
+            <View style={styles.sectTitle}>
+              <Text style={styles.title}>
+                Categories
+              </Text>
+            </View>
+
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.carouselCont}>
+
+              <View style={styles.categCard}>
+                <Image
+                  src={require("../assets/shoyu.png")}
+                  style={styles.categImg}
+                />
+                <Text style={styles.categName}>Shoyu</Text>
+              </View>
+              <View style={styles.categCard}>
+                <Image
+                  src={require("../assets/shoyu.png")}
+                  style={styles.categImg}
+                />
+                <Text style={styles.categName}>Shoyu</Text>
+              </View>
+              <View style={styles.categCard}>
+                <Image
+                  src={require("../assets/shoyu.png")}
+                  style={styles.categImg}
+                />
+                <Text style={styles.categName}>Shoyu</Text>
+              </View>
+              <View style={styles.categCard}>
+                <Image
+                  src={require("../assets/shoyu.png")}
+                  style={styles.categImg}
+                />
+                <Text style={styles.categName}>Shoyu</Text>
+              </View>
+
+            </ScrollView>
+
+          </View>
+
         </View>
 
-        <View style={[styles.shio, styles.categLayout]}>
-          <View style={styles.categContainer} />
-          <Text style={styles.categName}>Shio</Text>
-          <Image
-            style={styles.categIcon}
-            source={require("../assets/shio.png")}
-          />
-        </View>
 
-        <View style={[styles.miso, styles.categLayout]}>
-          <View style={styles.categContainer} />
-          <Text style={styles.categName}>Miso</Text>
-          <Image
-            style={[styles.categIcon]}
-            source={require("../assets/miso.png")}
-          />
-        </View>
-        
-        <View style={[styles.tonkotsu, styles.categLayout]}>
-          <View style={styles.categContainer} />
-          <Text style={styles.categName}>Tonkotsu</Text>
-          <Image
-            style={[styles.categIcon]}
-            source={require("../assets/tonkotsu.png")}
-          />
-        </View>
-      </View>
-
-      {/* Card */}
-      <View style={[styles.card, styles.cardPosition]}>
-        <View style={[styles.cardChild]} />
-        <Text style={[styles.title, styles.titlePosition]}>{`Where Ingredients\nMeet Inspiration!`}</Text>
-        <Text
-          style={[styles.subtitle, styles.titlePosition]}>
-            {`Discover personalized recipes tailored to your taste,\nhealth goals, and allergies, all at your fingertips!`}
-            </Text>
-        <Image
-          style={styles.ramenImg}
-          source={require("../assets/ramen-topview.png")}
-        />
-      </View>
-    </View>
+      </SafeAreaView>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  header: {
-    backgroundColor: Color.maroon,
-    borderBottomLeftRadius: 25,
-    borderBottomRightRadius: 25,
-    paddingTop: 40,
-    position: "absolute",
-    width: "100%",
-    height: 200,
+  categName: {
+    color: "#841D06",
+    fontSize: 12,
+    fontWeight: '700'
   },
-  welcome: {
-    top: 45,
-    left: 28,
-    fontSize: 15,
-    color: Color.white,
-    textAlign: "left",
-    fontFamily: FontFamily.basicRegular,
-    position: "absolute",
+  categImg: {
+    width: 48,
+    height: 48
   },
-  carlo: {
-    top: 62,
-    width: 220,
-    color: Color.white,
-    fontFamily: FontFamily.archivoBlackRegular,
-    fontSize: 25,
-    textAlign: "left",
-    left: 28,
-    position: "absolute",
-  },
-  textInput: {
-    padding: 7,
-    paddingHorizontal: 20,
-    backgroundColor: Color.white,
-    width: "75%",
-    borderRadius: 8,
-    fontSize: 15,
-  },
-  searchBarContainer: {
-    marginTop: 75,
-    justifyContent: 'center',
+  categCard: {
+    height: 88,
+    width: 88,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
+    backgroundColor: "#F3D9A4",
+    borderRadius: 8,
+    marginHorizontal: 4
+  },
+  p: {
+    fontSize: 12
+  },
+  lead: {
+    fontFamily: FontFamily.hiraKakuStdNW8,
+    fontSize: 16,
+    color: "#841D06"
+  },
+  introCard: {
+    width: "100%",
+    height: 133,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    backgroundColor: "#F3D9A4",
+    borderRadius: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 24
+  },
+  recipeCal: {
+    fontSize: 8,
+    color: 'white'
+  },
+  recipeName: {
+    color: 'white',
+    width: 104,
+    fontSize: 12,
+    fontWeight: '700'
+  },
+  row: {
     display: 'flex',
     flexDirection: 'row',
-    gap: 10,
+    width: "100%",
+    justifyContent: 'space-between',
   },
-  searchBtn: {
-    backgroundColor: Color.white,
-    padding: 8.5,
+  recipeDetails: {
+    backgroundColor: "#841D06",
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    height: 57,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8
+  },
+  img: {
+    height: 160,
+    width: 183,
+    resizeMode: 'contain'
+  },
+  imgCont: {
+    height: 160,
+    width: 183,
+  },
+  recipeCard: {
+    width: 183,
+    height: 217,
+    display: 'flex',
+    flexDirection: 'column',
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#841D06",
+    marginHorizontal: 8
   },
-  titles: {
-    fontFamily: FontFamily.archivoBlackRegular,
-    fontSize: 18,
-    color: Color.maroon,
-    top: 0,
-    left: 0,
-    textAlign: "left",
-    position: "absolute",
+  content: {
+    display: 'flex',
+    flexDirection: 'column',
+    paddingHorizontal: 24,
+    paddingTop: 160,
+    width: "100%",
+    overflow: 'hidden',
+    gap: 24,
+    paddingBottom: 64
   },
-  searchByIngredientsContainer: {
-    top: 228,
-    height: 130,
-    left: 13,
+  sectTitle: {
+    width: "100%",
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
-  searchIngredients: {
-    left: 1,
-    width: 265,
-    height: 25,
-    color: Color.maroon,
+  cardSect: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: "100%",
+    gap: 16,
   },
-  viewAll: {
-    left: 303,
-    top: 1,
-    position: "absolute",
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
   },
-  underlined: {
-    textDecorationLine: 'underline',
-    color: Color.darkGray,
-    width: 65,
+  carouselCont: {
+    width: "100%",
+    display: 'flex',
+    flexDirection: 'row',
+    overflow: 'visible'
   },
-  ingredientsText: {
-    textAlign: "center",
-    color: Color.darkGray,
-    fontFamily: FontFamily.basicRegular,
-    fontSize: 14.5,
+  ingreItemCont: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 4,
+    width: 56,
+    marginHorizontal: 8
   },
-  rowOfIngredientsWrapper: {
-    top: 39,
-    height: 91,
-    left: 0,
+  ingreIcon: {
+    height: 56,
+    width: 56,
   },
-  /* DRAFT FOR CIRCLES (NOT IMAGES)
-  circle1: {
-    backgroundColor: '#2A695E',
-    borderRadius: 99,
+  ingreText: {
+    fontSize: 12
+  },
+  header: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    backgroundColor: "#841D06",
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
     position: 'absolute',
-    width: 75,
-    height: 75,
-    top: 0,
-    left: 0,
-  }, */
-  ingredientsLayout: {
-    width: 377,
-    position: "absolute",
+    width: "100%",
+    height: 192,
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+    gap: 8
   },
-  ingredientsIconsLayout1: {
-    height: 90,
-    top: 2,
-    width: 76,
-    position: "absolute"
-  },
-  ingredientsIconsLayout2: {
-    height: "49.39%",
-    maxHeight: "100%",
-    overflow: "hidden",
-    maxWidth: "100%",
-    position: "absolute",
-  },
-  circlesLayout: {
-    height: 74,
-    left: 0,
-    width: 76,
-    top: 0,
-    position: "absolute",
-  },
-  eggPosition: {
-    left: 0,
-  },
-  eggIcon: {
-    width: "44.05%",
-    top: "15.08%",
-    right: "27.65%",
-    bottom: "35.53%",
-    left: "28.31%",
-  },
-  eggText: {
-    top: 78,
-    left: 20,
-    width: 35,
-    position: "absolute",
-  },
-  garlicPosition: {
-    left: 97,
-  },
-  garlicIcon: {
-    height: "56.09%",
-    width: "55.03%",
-    top: "10.95%",
-    right: "21.69%",
-    bottom: "32.96%",
-    left: "23.28%",
-    position: "absolute",
-  },
-  garlicText: {
-    width: 50,
-    left: 14,
-    top: 77,
-    position: "absolute",
-  },
-  onionPosition: {
-    left: 194,
-  },
-  onionIcon: {
-    height: "59.11%",
-    width: "66.27%",
-    top: "13.41%",
-    right: "15.34%",
-    bottom: "27.49%",
-    left: "18.39%",
-    position: "absolute",
-  },
-  onionText: {
-    width: 44,
-    left: 16,
-    top: 77,
-    position: "absolute",
-  },
-  porkPosition: {
-    left: 293,
-  },
-  porkIcon: {
-    width: "60.05%",
-    top: "17.77%",
-    right: "19.97%",
-    bottom: "32.85%",
-    left: "19.97%",
-  },
-  porkText: {
-    left: 18,
-    width: 40,
-    top: 77,
-    position: "absolute",
-  },
-  searchByCategory: {
-    top: 395,
-    width: 380,
-    height: 128,
-    left: 13,
-  },
-  categLayout: {
-    height: 87,
-    width: 87,
-    position: "absolute",
-  },
-  categContainer: {
-    backgroundColor: Color.yellow,
-    borderRadius: 15,
-    height: 83,
-    width: 83,
-    top: 0,
-    position: "absolute",
-  },
-  categName: {
-    fontFamily: FontFamily.candalRegular,
+  welcome: {
+    width: "100%",
     fontSize: 12,
-    top: 63,
-    textAlign: "center",
-    color: Color.maroon,
-    position: "absolute",
-    left: 5,
-    width: 75,
+    color: Color.white,
   },
-  categIcon: {
-    height: 55,
-    width: 59,
-    top: 5,
-    left: 13,
-    position: "absolute",
-  },
-  shoyu: {
-    top: 41,
-    width: 87,
-    left: 0,
-  },
-  shio: {
-    left: 93,
-    top: 41,
-    width: 87,
-  },
-  miso: {
-    left: 187,
-    top: 41,
-    width: 87,
-  },
-  tonkotsu: {
-    left: 280,
-    top: 41,
-    width: 87,
-  },
-  card: {
-    top: 495,
-    width: 400,
-    height: 280,
-  },
-  cardPosition: {
-    left: 9,
-    position: "absolute",
-  },
-  cardChild: {
-    top: 120,
-    borderRadius: 5,
-    backgroundColor: "#fdfdfd",
-    width: 373,
-    height: 146,
-    shadowOpacity: 1,
-    elevation: 4,
-    shadowRadius: 4,
-    shadowOffset: {
-      width: 0,
-      height: 2.5,
-    },
-    shadowColor: "rgba(0, 0, 0, 1)",
-    left: 0,
-    position: "absolute",
+  username: {
+    width: "100%",
+    color: Color.white,
+    fontFamily: FontFamily.hiraKakuStdNW8,
+    fontSize: 32,
   },
   title: {
-    top: 150,
-    fontSize: 22,
-    width: 207,
-    lineHeight: 25,
-    fontFamily: FontFamily.orelegaOneRegular,
-    color: Color.maroon,
+    fontFamily: FontFamily.hiraKakuStdNW8,
+    fontSize: 16,
+    color: "#841D06"
   },
-  titlePosition: {
-    left: 19,
-    textAlign: "left",
-    position: "absolute",
+  viewAll: {
+    fontSize: 12,
+    color: 'black'
   },
-  subtitle: {
-    top: 220,
-    width: 340,
-    color: Color.darkGray,
-    left: 19,
-    //fontSize: FontSize.size_mini,
-    fontFamily: FontFamily.basicRegular,
-  },
-  ramenImg: {
-    left: 10,
-    width: 393,
-    height: 262,
-    top: 0,
-    position: "absolute",
-  },
-  home: {
-    flex: 1,
-    height: "100%",
-    width: "100%",
-    backgroundColor: Color.white,
-  },
+
 });
 
 export default HomeScreen;
@@ -513,8 +473,8 @@ export default HomeScreen;
 
 
 
-  
 
-  
+
+
 
 
